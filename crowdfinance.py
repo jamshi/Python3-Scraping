@@ -58,7 +58,7 @@ class BaseClass:
 
 	def mongodb_aggregate(self):
 		pipeline = [
-    				{"$match": {'daysleft' : {'$gte' : 10}}}, # Filter days more than 10
+    				{"$match": {'daysleft' : {'$gte' : 10}}}, # Filter daysleft more than 10
 				   	{ '$group': { '_id': '$null', 'sum': { '$sum': '$amount_raised' } } }]
 		sum = list(db.projects.aggregate(pipeline))[0]['sum']
 		return sum
@@ -68,7 +68,7 @@ class BaseClass:
 		return count
 
 	def clear_db(self):
-		count = db.projects.remove()
+		db.projects.remove()
 
 
 class CrowdCube(BaseClass):

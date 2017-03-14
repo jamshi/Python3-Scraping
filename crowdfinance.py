@@ -81,14 +81,22 @@ class CrowdCube(BaseClass):
 	def _extract_details(self, card):
 		temp = {}
 		for obj in CROWDCUBE_PARSE_DICT:
-			item = card.select(obj['selector'])
-			if len(item) > 0:
-				content = item[0].getText(strip=True) if 'attr' not in obj else item[0][obj['attr']].strip()
-				temp[obj['key']] =  content if obj['type'] == 'string' else float(re.search(r'\d+', content.replace(',', '')).group())
-			else:
-				temp[obj['key']] = ""
+			try:
+				item = card.select(obj['selector'])
+				if len(item) > 0:
+					content = item[0].getText(strip=True) if 'attr' not in obj else item[0][obj['attr']].strip()
+					if obj['type'] == 'string':
+						 temp[obj['key']] =  content 
+					else:
+						number = re.search(r'\d+', content.replace(',', ''))
+						temp[obj['key']] =  float(number.group()) if number else 0
+				else:
+					temp[obj['key']] = ""
+			except Exception as ex:
+				pass
 		temp['source'] = self._source
 		return temp
+		
 
 	def scrape_site(self):
 		result = requests.get(CROWDCUBE_URL)
